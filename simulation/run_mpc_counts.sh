@@ -18,7 +18,7 @@ do
     $HOSP_DIR/mpc-count-hospital-round1.py publickey_combined.bin $file $fbname.r1ect
 done
 
-$SERV_DIR/mpc-count-hospital-round1.py combined_r1ect.bin publickey_combined.bin *.r1ect
+$SERV_DIR/mpc-count-server-round1.py combined_r1ect.bin publickey_combined.bin *.r1ect
 
 for file in hosp*.npy
 do
