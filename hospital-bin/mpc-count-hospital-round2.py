@@ -6,7 +6,6 @@ import sys
 import os
 import argparse
 import numpy as np
-from Cryptodome.Util import number
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from library import elgamal  # noqa: 402
@@ -37,7 +36,7 @@ def main(argv):
     with open(args.input, 'rb') as f:
         round1b = f.read()
 
-    padded_size = int(np.round(number.size(private_key.p) / 8))
+    padded_size = int(np.round(private_key.p.size_in_bits() / 8))
     output_string = elgamal.shared_secret(private_key, elgamal.CipherText.byte_init(private_key, round1b)).to_bytes(padded_size)
 
     if output_string is not None:

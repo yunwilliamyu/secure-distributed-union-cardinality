@@ -2,7 +2,7 @@
 
 from Cryptodome.Math.Numbers import Integer
 from Cryptodome.PublicKey import ElGamal
-from Cryptodome.Util import number
+# from Cryptodome.Util import number
 from Cryptodome.Random.random import randint
 import numpy as np
 import time
@@ -33,7 +33,7 @@ key_public = key.publickey()
 
 def serialize_ElGamalPrivateKey(key):
     '''export an ElGamal Public Key to a bytestring'''
-    padded_size = int(np.round(number.size(key.p) / 8))
+    padded_size = int(np.round(key.p.size_in_bits() / 8))
     return key.p.to_bytes(padded_size) + key.g.to_bytes(padded_size) + key.y.to_bytes(padded_size) + key.x.to_bytes(padded_size)
 
 
@@ -50,7 +50,7 @@ def deserialize_ElGamalPrivateKey(bytestring):
 
 def serialize_ElGamalPublicKey(key):
     '''export an ElGamal Public Key to a bytestring'''
-    padded_size = int(np.round(number.size(key.p) / 8))
+    padded_size = int(np.round(key.p.size_in_bits() / 8))
     return key.p.to_bytes(padded_size) + key.g.to_bytes(padded_size) + key.y.to_bytes(padded_size)
 
 
@@ -65,13 +65,13 @@ def deserialize_ElGamalPublicKey(bytestring):
 
     def export_val(self):
         '''Returns a bytestring.'''
-        padded_size = int(np.round(number.size(self.key.p) / 8))
+        padded_size = int(np.round(key.p.size_in_bits() / 8))
         return self.c1.to_bytes(padded_size) + self.c2.to_bytes(padded_size)
 
     @classmethod
     def byte_init(cls, key, bytestring):
         '''Returns a Ciphertext from a bytestring containing c1 and c2'''
-        padded_size = int(np.round(number.size(key.p) / 8))
+        padded_size = int(np.round(key.p.size_in_bits() / 8))
         assert(len(bytestring) == 2 * padded_size)
         c1 = Integer.from_bytes(bytestring[:padded_size])
         c2 = Integer.from_bytes(bytestring[padded_size:])
@@ -167,13 +167,13 @@ class CipherText(object):
 
     def export_val(self):
         '''Returns a bytestring.'''
-        padded_size = int(np.round(number.size(self.key.p) / 8))
+        padded_size = int(np.round(self.key.p.size_in_bits() / 8))
         return self.c1.to_bytes(padded_size) + self.c2.to_bytes(padded_size)
 
     @classmethod
     def byte_init(cls, key, bytestring):
         '''Returns a Ciphertext from a bytestring containing c1 and c2'''
-        padded_size = int(np.round(number.size(key.p) / 8))
+        padded_size = int(np.round(key.p.size_in_bits() / 8))
         assert(len(bytestring) == 2 * padded_size)
         c1 = Integer.from_bytes(bytestring[:padded_size])
         c2 = Integer.from_bytes(bytestring[padded_size:])
@@ -240,7 +240,7 @@ def get_hospital_shared_secrets(hospital_key, cehll):
 def decode_hospital_shared_secrets_bytestring(key_public, ss_bytes, sketch_size=32):
     '''Decodes a bytestring of hospital shared secrets corresponding to an encrypted
     HLL bytestring from the transmit entry of hospital_round2a_hll'''
-    padded_size = int(np.round(number.size(key_public.p) / 8))
+    padded_size = int(np.round(key_public.p.size_in_bits() / 8))
     array_item_num = len(ss_bytes) // padded_size
     assert array_item_num * padded_size == len(ss_bytes)
 
@@ -267,7 +267,7 @@ def decode_encrypted_hll_bytestring(key_public, ehll_bytes, sketch_size=32):
     '''Decodes an encrypted HLL bytestring from the transmit entry of hospital_round1a_hll
        or from the transmit entry of hospital_round1b_hll
     '''
-    padded_size = int(np.round(number.size(key_public.p) / 8))
+    padded_size = int(np.round(key_public.p.size_in_bits() / 8))
     array_item_num = len(ehll_bytes) // padded_size // 2
     assert array_item_num * 2 * padded_size == len(ehll_bytes)
 
@@ -308,7 +308,7 @@ def hospital_round0a(key_template, key_x=None):
         x = Integer(randint(2, int(key_template.p - 1)))
     curr_y = pow(key_template.g, x, key_template.p)
 
-    padded_size = int(np.round(number.size(key_template.p) / 8))
+    padded_size = int(np.round(key_template.p.size_in_bits() / 8))
     curr_y_bytestring = curr_y.to_bytes(padded_size)
 
     private_key = construct_key(key_template, x)
@@ -345,9 +345,6 @@ def hub_round0b(key_template, hospital_public_shares):
         key_y = (curr_y * key_y) % key_template.p
     key_public = ElGamal.construct((key_template.p, key_template.g, key_y))
     elapsed = time.perf_counter() - start
-
-    # padded_size = int(np.round(number.size(key_template.p) / 8))
-    # key_y_bytestring = key_y.to_bytes(padded_size)
 
     answer_dict = {}
     answer_dict['key_public'] = key_public
@@ -433,7 +430,7 @@ def hospital_round2a_hll(hospital_key, cehll_bytes, sketch_size=32):
     start = time.perf_counter()
     cehll = decode_encrypted_hll_bytestring(hospital_key, cehll_bytes)
     secrets = get_hospital_shared_secrets(hospital_key, cehll)
-    padded_size = int(np.round(number.size(hospital_key.p) / 8))
+    padded_size = int(np.round(hospital_key.p.size_in_bits() / 8))
     messages = (item.to_bytes(padded_size) for sublist in secrets for item in sublist)
     transmit = b''.join(messages)
     elapsed = time.perf_counter() - start
@@ -590,7 +587,7 @@ def full_simulation_hll(key_template, hospital_hlls):
 
 def full_simulation_counts(key_template, hospital_counts):
     '''Runs a full simulation of an encrypted sum'''
-    padded_size = int(np.round(number.size(key_template.p) / 8))
+    padded_size = int(np.round(key_template.p.size_in_bits() / 8))
     num_hospitals = len(hospital_counts)
     round0a = [hospital_round0a(key_template) for _ in range(num_hospitals)]
     round0a_transmissions = [x['transmit'] for x in round0a]
