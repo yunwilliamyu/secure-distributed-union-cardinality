@@ -1,4 +1,4 @@
-!!Distributed Hospital Queries
+#Distributed Hospital Queries
 
 Here we have code to allow distributed hospital queries.
 
