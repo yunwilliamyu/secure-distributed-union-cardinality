@@ -1,5 +1,6 @@
 tmp/
 library/TAB-table.pickle
+library/elgamal-billion-table.npy
 *.pyc
 simulation/10_5.txt
 simulation/million_test.txt
