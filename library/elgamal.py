@@ -6,7 +6,6 @@ from Cryptodome.PublicKey import ElGamal
 from Cryptodome.Random.random import randint
 import numpy as np
 import time
-import pickle
 from xxhash import xxh64_intdigest
 import array
 import sys
@@ -498,11 +497,30 @@ class discrete_log4_table:
             y = Integer(y) * Integer(4) % key.p
             if x % 1000000 == 0:
                 print(x)
-        self.table = table
+
+        # Figure out equivalent numpy sizes
+        s = array.array(typecode).itemsize * 8
+        if s <= 8:
+            nptype = np.uint8
+        elif s <= 16:
+            nptype = np.uint16
+        elif s <= 32:
+            nptype = np.uint32
+        elif s <= 64:
+            nptype = np.uint64
+        else:
+            raise TypeError("No numpy type large enough to hold array")
+        maxtable_length = max([len(t) for t in table])
+        table_of_nps = []
+        for t in table:
+            t_np = np.array(t, dtype=nptype)
+            t_np.resize(maxtable_length)
+            table_of_nps.append(t_np)
+        self.table = np.asarray(table_of_nps)
 
     def dlog4(self, q):
         for x in self.table[xxh64_intdigest(str(q)) % 2**16]:
-            if pow(Integer(4), x, self.key.p) == q:
+            if pow(Integer(4), int(x), self.key.p) == q:
                 return x
 
     @classmethod
@@ -523,9 +541,8 @@ def load_precomputed_discrete_log4_table():
     if _dl4_table is None:
         try:
             directory = os.path.dirname(os.path.abspath(hyperloglog.__file__))
-            f_tab = open(directory + '/TAB-table.pickle', 'rb')
-            _dl4_table = discrete_log4_table.fromtable(key, pickle.load(f_tab))
-            f_tab.close()
+            f_tab = np.load(directory + '/elgamal-billion-table.npy', allow_pickle=False)
+            _dl4_table = discrete_log4_table.fromtable(key, f_tab)
         except FileNotFoundError:
             print("Precomputed table not found. Continuing to use Naive slow method.", file=sys.stderr)
 

@@ -8,7 +8,7 @@ def read_patient_list(fname):
     '''Loads a newline-delimited list of integer numeric patient ids'''
     filename, file_extension = os.path.splitext(fname)
     if file_extension == '.npy' or file_extension == '.npz':
-        A = np.load(fname)
+        A = np.load(fname, allow_pickle=False)
     else:
         A = np.loadtxt(fname, dtype=np.uint64)
     return A
