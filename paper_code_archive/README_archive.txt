@@ -48,7 +48,16 @@ we include it here for the sake of scientific completeness and reproducibility.
         ./multirun.bash
 
     Then we analyze the results:
-        python analyzer.py *.dat > summary100.txt
+        python3 analyzer.py *.dat > summary100.txt
+        python3 analayzer_csv_out.py *.dat > summary100.csv
+
+    summary100.txt looks like the tables given in the appendix to the paper
+    summary100.csv is the same data, in slightly easier to parse CSV format.
+
+    Note that the results include more statistics than we provided in the paper.
+    Notably, we include both 2-anonymity (r1), 5-anonymity (r5), and
+    10-anonymity (r9), whereas in the paper, we only discussed 10-anonymity.
+
 
 
 
