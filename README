@@ -10,6 +10,11 @@ We allow several different methods including the following:
 * MPC encrypted raw counts
 * MPC encrypted HyperLogLog sketches
 
+Note that this is a cleaned up version of the code meant for actual usage.
+If you are looking for the original code associated with our manuscript, it
+can be found in "paper_code_archive/". Be warned though that that code is
+very brittle and designed for benchmarking, rather than for ordinary use.
+
 0. Requirements
     Python 3
 
@@ -93,6 +98,10 @@ simulation/:    Command-line scripts to simulate a hospital network
                             MPC-count
     run_mpc_hll.sh:         Takes in a simulated hospital network, and runs
                             MPC-HLL
+
+paper_code_archive/:    Contains the extremely ugly version of the code
+                        used in generating benchmarking results in the paper.
+    README_archive.txt: Separate readme specifically for the old code.
 
 2. Install and test:
     First download and expand the repo to a working directory:

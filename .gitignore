@@ -1,5 +1,5 @@
 tmp/
-library/TAB-table.pickle
+paper_code_archive/TAB-table.pickle
 library/elgamal-billion-table.npy
 *.pyc
 simulation/10_5.txt
