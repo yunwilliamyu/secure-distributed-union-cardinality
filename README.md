@@ -41,7 +41,7 @@ hospital-bin/:  Command-line scripts for a hospital
     ids-hospital.py:                generates hashed IDs for a patient list
     hll-hospital.py:                summarizes a patient list via HLL
     
-    mpc-keygen-hospital.py:         Generates a hospital private partial shared
+    mpc-keygen-hospital.py:         Generates a hospital private partial shared key
 
     mpc-count-hospital-round1.py:   Generates an encrypted count
     mpc-count-hospital-round2.py:   Takes in an encrypted sum, and produces
