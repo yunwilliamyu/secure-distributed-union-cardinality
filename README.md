@@ -1,3 +1,7 @@
+*Important*: this is proof-of-concept academic code, and has not undergone a
+security audit. This is especially true of the current incarnation of the
+MPC code, which should NOT be used for any sensitive data.
+
 This code is associated with the following manuscript:
 > Yun William Yu and Griffin Weber. *Federated queries of clinical data
 > repositories: balancing accuracy and privacy.* Submitted and under review.
@@ -10,7 +14,7 @@ We allow several different methods including the following:
 * MPC encrypted raw counts
 * MPC encrypted HyperLogLog sketches
 
-Note that this is a cleaned up version of the code meant for actual usage.
+Note that this is a partially cleaned up version of the code.
 If you are looking for the original code associated with our manuscript, it
 can be found in "paper_code_archive/". Be warned though that that code is
 very brittle and designed for benchmarking, rather than for ordinary use.
